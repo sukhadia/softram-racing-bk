@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppService } from '../app.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Member } from '../types';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-member-details',
@@ -16,7 +17,7 @@ export class MemberDetailsComponent implements OnInit, OnChanges {
   submitted = false;
   alertType: String;
   alertMessage: String;
-  teams = [];
+  teams: Observable<any[]> = of([]);
 
   constructor(private fb: FormBuilder, public appService: AppService, private router: Router, private route: ActivatedRoute) {
     this.memberForm = this.fb.group({
@@ -43,11 +44,7 @@ export class MemberDetailsComponent implements OnInit, OnChanges {
   }
 
   private populateTeamsDropdown() {
-    this.appService.getTeams().subscribe(data => {
-      if (data) {
-        this.teams = data;
-      }
-    });
+    this.teams = this.appService.getTeams();
   }
 
   ngOnChanges() { }

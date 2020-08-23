@@ -4,6 +4,7 @@ import { catchError, retry, timeout } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Member } from './types';
 
+const MAX_RETRIES = 3
 @Injectable({
   providedIn: 'root'
 })
@@ -11,16 +12,14 @@ export class AppService {
   api = 'http://localhost:8000/api';
   username: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Returns all members
   getMembers() {
     return this.http
       .get(`${this.api}/members`)
       .pipe(
-        // node appears to restart sometimes when db updates are made (db.json changes) 
-        // causing the /members call to timeout, hence the retries
-        retry(3),
+        retry(MAX_RETRIES),
         catchError(this.handleError)
       );
   }
@@ -28,7 +27,9 @@ export class AppService {
   getMemberById(id: number) {
     return this.http
       .post(`${this.api}/memberById`, { id })
-      .pipe(catchError(this.handleError));
+      .pipe(
+        retry(MAX_RETRIES),
+        catchError(this.handleError));
   }
 
   setUsername(name: string): void {
@@ -38,25 +39,33 @@ export class AppService {
   addMember(memberForm: Member) {
     return this.http
       .post<Member>(`${this.api}/addMember`, memberForm)
-      .pipe(catchError(this.handleError))
+      .pipe(
+        retry(MAX_RETRIES),
+        catchError(this.handleError))
   }
 
   editMember(memberForm: Member) {
     return this.http
       .post<Member>(`${this.api}/editMember`, memberForm)
-      .pipe(catchError(this.handleError))
+      .pipe(
+        retry(MAX_RETRIES),
+        catchError(this.handleError))
   }
 
   deleteMember(id: number) {
     return this.http
       .post<any>(`${this.api}/deleteMember`, { id })
-      .pipe(catchError(this.handleError))
+      .pipe(
+        retry(MAX_RETRIES),
+        catchError(this.handleError))
   }
 
   getTeams() {
     return this.http
       .get(`${this.api}/teams`)
-      .pipe(catchError(this.handleError));
+      .pipe(
+        retry(MAX_RETRIES),
+        catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

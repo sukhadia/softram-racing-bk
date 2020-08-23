@@ -18,15 +18,7 @@ describe('MembersComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MembersComponent],
       imports: [HttpClientModule, RouterTestingModule],
-      providers: [
-        {
-          provide: Router,
-          useClass: class {
-            navigate = jasmine.createSpy('navigate');
-          }
-        }
-        
-      ]
+      providers: []
     }).compileComponents();
   }));
   
@@ -38,8 +30,14 @@ describe('MembersComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    spyOn(component.router, 'navigate');
     component.editMemberById(1);
     expect(component.router.navigate).toHaveBeenCalled()
   });
 
+  it('should call dbDelete when removing a member', () => {
+    spyOn(component, 'dbDelete');
+    component.deleteMemberById(1);
+    expect(component.dbDelete).toHaveBeenCalled();
+  });
 });

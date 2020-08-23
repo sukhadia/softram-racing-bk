@@ -1,4 +1,4 @@
-<div *ngIf="!loading" class="container-fluid">
+<div class="container-fluid">
   <button id="addMemberButton" class="btn btn-primary pull-right" routerLink="/add-member">Add Member</button>
   <table class="table">
     <thead>
@@ -13,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor='let member of members'>
+      <tr *ngFor='let member of members|async'>
         <td>
           <button type="button" class="btn btn-primary edit-btn" (click)="editMemberById(member?.id)">Edit</button>
           <button type="button" class="btn btn-danger" (click)="deleteMemberById(member?.id)">Remove</button>
@@ -28,4 +28,3 @@
     </tbody>
   </table>
 </div>
-<p *ngIf="loading">Loading...</p>
