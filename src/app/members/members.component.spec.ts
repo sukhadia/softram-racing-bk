@@ -2,10 +2,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MembersComponent } from './members.component';
 
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
+import { By } from 'protractor';
+
 
 describe('MembersComponent', () => {
   let component: MembersComponent;
@@ -14,7 +17,7 @@ describe('MembersComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MembersComponent],
-      imports: [HttpClientModule, RouterModule],
+      imports: [HttpClientModule, RouterTestingModule],
       providers: [
         {
           provide: Router,
@@ -22,10 +25,11 @@ describe('MembersComponent', () => {
             navigate = jasmine.createSpy('navigate');
           }
         }
+        
       ]
     }).compileComponents();
   }));
-
+  
   beforeEach(() => {
     fixture = TestBed.createComponent(MembersComponent);
     component = fixture.componentInstance;
@@ -34,5 +38,8 @@ describe('MembersComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    component.editMemberById(1);
+    expect(component.router.navigate).toHaveBeenCalled()
   });
+
 });

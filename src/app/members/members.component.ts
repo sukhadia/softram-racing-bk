@@ -12,7 +12,7 @@ export class MembersComponent implements OnInit {
   members = [];
   loading = false;
 
-  constructor(public appService: AppService, private router: Router) {}
+  constructor(public appService: AppService, public router: Router) {}
 
   ngOnInit() {
     this.refreshMembers();

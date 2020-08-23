@@ -18,7 +18,7 @@ export class MemberDetailsComponent implements OnInit, OnChanges {
   alertMessage: String;
   teams = [];
 
-  constructor(private fb: FormBuilder, private appService: AppService, private router: Router, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder, public appService: AppService, private router: Router, private route: ActivatedRoute) {
     this.memberForm = this.fb.group({
       firstName: [''],
       lastName: [''],
@@ -50,22 +50,32 @@ export class MemberDetailsComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges() {}
+  ngOnChanges() { }
 
   onSubmit(form: FormGroup) {
-    this.memberModel = form.value;
-    if (this.editMemberId) {
-      this.memberModel.id = this.editMemberId
-      this.appService.editMember(this.memberModel)
-        .subscribe(data => {
-          this.router.navigate(['members'])
-        });
-    } else {
-      this.appService.addMember(this.memberModel)
-        .subscribe(data => {
-          this.router.navigate(['members'])
-        });
-    }
-    
+    this.memberModel = {...form.value};
+    this.updateDb();
+  }
+
+  updateDb() {
+    if (this.editMemberId)
+      this.dbUpdate();
+    else
+      this.dbInsert();
+  }
+
+  dbInsert() {
+    this.appService.addMember(this.memberModel)
+      .subscribe(data => {
+        this.router.navigate(['members']);
+      });
+  }
+
+  dbUpdate() {
+    this.memberModel.id = this.editMemberId;
+    this.appService.editMember(this.memberModel)
+      .subscribe(data => {
+        this.router.navigate(['members']);
+      });
   }
 }
